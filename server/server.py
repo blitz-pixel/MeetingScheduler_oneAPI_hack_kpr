@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 password = quote_plus('charan@db')
 
-# Use the encoded password in the connection string
+
 client = MongoClient(f"mongodb+srv://AI-Meeting-Scheduler:{password}@cluster0.kikcm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client['AI-Meeting-Scheduler']
 user_collection = db['users']
@@ -33,7 +33,7 @@ def register_user():
     
     user_collection.insert_one({
         'username': username,
-        'password': password,  # No password hashing
+        'password': password,  
         'email': email  
     })
     
