@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleRegister = () => {
-    navigate("/login");
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5001/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: name,
+          email,
+          password,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        navigate("/login");
+      } else {
+        alert("Something went wrong!!!!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   return (
     <>
       <NavBar />
@@ -16,6 +42,19 @@ const Register = () => {
           <h1 className="mb-4 font-medium text-center">Register</h1>
           <form>
             <label
+              htmlFor="name"
+              className="input input-bordered flex items-center gap-2 mb-4"
+            >
+              <input
+                id="name"
+                type="text"
+                className="grow"
+                placeholder="User Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label
               htmlFor="email"
               className="input input-bordered flex items-center gap-2 mb-4"
             >
@@ -24,6 +63,8 @@ const Register = () => {
                 type="text"
                 className="grow"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
 
@@ -36,6 +77,8 @@ const Register = () => {
                 type="password"
                 className="grow"
                 placeholder="****"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </label>
             <button className="btn btn-neutral" onClick={handleRegister}>

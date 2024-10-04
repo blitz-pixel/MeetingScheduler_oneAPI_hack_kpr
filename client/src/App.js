@@ -10,11 +10,6 @@ import Home from "./pages/Home";
 function App() {
   const [user, setUser] = useState(true);
   const navigate = useNavigate();
-  useEffect(() => {
-    if (!user) {
-      navigate("/login");
-    }
-  }, [user, navigate]);
 
   return (
     <div className="App">

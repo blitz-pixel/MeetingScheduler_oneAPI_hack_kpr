@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "../components/NavBar";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/dashboard");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://127.0.0.1:5001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        alert(data.message);
+        navigate("/dashboard");
+      } else {
+        alert("Something went wrong!!!!");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
   return (
     <>
@@ -24,6 +47,8 @@ const Login = () => {
                 type="text"
                 className="grow"
                 placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
 
@@ -36,6 +61,8 @@ const Login = () => {
                 type="password"
                 className="grow"
                 placeholder="****"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </label>
             <button className="btn btn-neutral" onClick={handleLogin}>

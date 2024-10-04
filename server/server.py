@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from urllib.parse import quote_plus
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)  # Enable CORS for all routes
 password = quote_plus('charan@db')
 
 
