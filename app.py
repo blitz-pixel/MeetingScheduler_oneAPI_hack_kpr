@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
-import openai,time
-
+import openai,timem,os
+from dotenv import load_dotenv
 from openai.error import RateLimitError
 
+load_dotenv()
 app = Flask(__name__)
 
-# Set your OpenAI API key
-openai.api_key = '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'
 
+openai.api_key = os.getenv('OPENAI_API_KEY')
 availability_data = {
     "employee1@example.com": {
         "free_times": ["2024-10-02T09:00:00", "2024-10-02T13:00:00"],
