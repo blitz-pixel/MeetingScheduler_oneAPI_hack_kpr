@@ -4,12 +4,13 @@ from pymongo import MongoClient
 from urllib.parse import quote_plus
 from flask_cors import CORS
 from flask_session import Session
+import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 password = quote_plus('charan@db')
 
-app.secret_key = 's3cr3t_k3y_1234567890abcdef'  # Set your secret key for session
+app.config['SECRET_KEY'] = os.getenv('SESSION_SECRET_KEY') # Set your secret key for session
 app.config['SESSION_TYPE'] = 'filesystem'  # Use filesystem session
 Session(app)  # Initialize the session
 
@@ -19,8 +20,9 @@ db = client['AI-Meeting-Scheduler']
 user_collection = db['users']
 
 # Google OAuth credentials
-GOOGLE_CLIENT_ID = '763319118647-26io09qp0s1rul1van12ii26c5b3lnta.apps.googleusercontent.com'  
-GOOGLE_CLIENT_SECRET = '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'  
+app.config['CLIENT_ID'] = os.getenv('CLIENT_ID')
+app.config['CLIENT_SECRET'] = os.getenv('CLIENT_SECRET')
+
 GOOGLE_REDIRECT_URI = 'http://127.0.0.1:5001/auth-google'  
 
 @app.route('/')
@@ -31,7 +33,7 @@ def home():
 @app.route('/login-google')
 def login_google():
     return redirect(
-        f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/calendar.readonly"
+        f"https://accounts.google.com/o/oauth2/v2/auth?client_id={app.config['CLIENT_ID']}&redirect_uri={GOOGLE_REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/calendar.readonly"
     )
 
 # Route for handling Google authentication callback
@@ -41,8 +43,8 @@ def auth_google():
     token_url = 'https://oauth2.googleapis.com/token'
     data = {
         'code': code,
-        'client_id': GOOGLE_CLIENT_ID,
-        'client_secret': GOOGLE_CLIENT_SECRET,
+        'client_id': app.config['CLIENT_ID'],
+        'client_secret': app.config['CLIENT_SECRET'],
         'redirect_uri': GOOGLE_REDIRECT_URI,
         'grant_type': 'authorization_code'
     }
