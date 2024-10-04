@@ -4,8 +4,10 @@ from pymongo import MongoClient
 from urllib.parse import quote_plus
 from flask_cors import CORS
 from flask_session import Session
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 password = quote_plus('charan@db')
